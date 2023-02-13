@@ -396,7 +396,11 @@ export default class EnabledStateController implements StateController {
         throw new InvalidStateError(props.destinationScreen, actualOldState.getStateName());
       }
 
-      const migratedState = actualOldState.updateState(props.destinationScreen, props.componentInstanceId);
+      const migratedState = actualOldState.updateState(
+        props.destinationScreen,
+        props.componentInstanceId,
+        actualOldState.componentInstanceId,
+      );
       this.stateRegistry.set(props.componentInstanceId, migratedState);
       this.stateRegistry.delete(DESTINATION_SCREEN_NAME_PLACEHOLDER);
       const watchdogTimerId = this.findWatchdogTimerIdForComponent(DESTINATION_SCREEN_NAME_PLACEHOLDER);

@@ -1,3 +1,5 @@
+import {BridgedEventTimestampBuilder} from '../../BridgedEventTimestamp';
+
 import State, {StateProps} from './State';
 
 type FlowType = 'app_boot' | 'flow_start' | 'flow_reset';
@@ -22,7 +24,21 @@ export default class Started extends State {
     return Started.STATE_NAME;
   }
 
-  updateState(newDestinationScreen: string, newComponentInstanceId: string) {
+  updateState(newDestinationScreen: string, newComponentInstanceId: string, oldComponentInstanceId: string) {
+    if (oldComponentInstanceId === '__unknown_destination_screen__') {
+      const time = new BridgedEventTimestampBuilder().build();
+
+      return new Started({
+        timestamp: time,
+        componentInstanceId: newComponentInstanceId,
+        snapshotId: this.snapshotId,
+        previousState: this.previousState,
+        type: this.type,
+        sourceScreen: this.sourceScreen,
+        destinationScreen: newDestinationScreen,
+      });
+    }
+
     return new Started({
       timestamp: this.timestamp,
       componentInstanceId: newComponentInstanceId,
