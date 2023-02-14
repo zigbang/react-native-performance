@@ -1,8 +1,6 @@
 import React, {useContext} from 'react';
 
-import {PerformanceProfilerError} from '../exceptions';
-
-export type ErrorHandler = (_: PerformanceProfilerError) => void;
+export type ErrorHandler = (_: Error) => void;
 
 const ErrorHandlerContext = React.createContext<ErrorHandler>(() => {});
 
