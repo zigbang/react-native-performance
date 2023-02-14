@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {PerformanceProfiler, LogLevel} from '@shopify/react-native-performance';
+import {PerformanceProfiler, LogLevel, PerformanceProfilerError} from '@shopify/react-native-performance';
 import {ListsProfiler} from '@shopify/react-native-performance-lists-profiler';
 import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client';
 
@@ -70,7 +70,12 @@ const App = () => {
   return (
     <>
       <ApolloProvider client={apolloClient}>
-        <PerformanceProfiler logLevel={LogLevel.Debug}>
+        <PerformanceProfiler
+          logLevel={LogLevel.Debug}
+          errorHandler={(error: PerformanceProfilerError) => {
+            console.log(`### ${JSON.stringify(error)}`);
+          }}
+        >
           <ListsProfiler onInteractive={onInteractiveCallback} onBlankArea={onBlankAreaCallback}>
             <NavigationTree />
           </ListsProfiler>

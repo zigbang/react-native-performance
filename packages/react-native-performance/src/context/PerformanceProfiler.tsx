@@ -42,7 +42,7 @@ const PerformanceProfiler = ({
    * `errorHandler` wrapped in custom logic that should be out of users' control (such as logging of internal errors).
    */
   const performanceProfilerErrorHandler = useCallback(
-    (error: Error) => {
+    (error: PerformanceProfilerError) => {
       // If profiler throws an error in parallel with navigation, it might visibly delay animation.
       // To prevent that error handler is wrapped in runAfterInteractions.
       // It's not significant when an error gets reported, but it unblocks navigation transition.
