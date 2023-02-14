@@ -11,5 +11,6 @@ Please refer to [documentation](https://shopify.github.io/react-native-performan
 2. package.json 파일의 version 프로퍼티를 새로운 버전으로 업데이트 합니다. (e.g. 4.1.2-zigbang.1)
 3. terminal에서 아래 명령어를 실행합니다.
 ```bash
+npm run build
 npm publish
 ```
