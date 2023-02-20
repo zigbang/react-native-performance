@@ -51,12 +51,12 @@ const PerformanceProfiler = ({
         // We also don't want to run `errorHandler` for these bugs since then users would have to make that distinction themselves
         // and we want to save them from that complexity.
         if (error instanceof PerformanceProfilerError && error.type === 'bug') {
-          logger.error(
+          logger.warn(
             `You have hit an internal error, please report this: https://github.com/Shopify/react-native-performance/issues/new\n` +
               `${error.name}: ${error.message}`,
           );
         } else {
-          logger.error(`${error.name}: ${error.message}`);
+          logger.warn(`${error.name}: ${error.message}`);
           errorHandler(error);
         }
       });
