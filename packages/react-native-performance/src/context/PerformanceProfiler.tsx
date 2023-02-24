@@ -9,6 +9,7 @@ import {ErrorHandler, ErrorHandlerContextProvider, LogLevel} from '../utils';
 import {StateControllerContextProvider, useStateControllerInitializer} from '../state-machine';
 import logger from '../utils/Logger';
 import {PerformanceProfilerError} from '../exceptions';
+import {FinishTransaction, StartTransaction} from '../state-machine/controller/TransactionController';
 
 import ReportObserver from './ReportObserver';
 import useReportEmitter from './useReportEmitter';
@@ -18,6 +19,8 @@ const DEFAULT_RENDER_TIMEOUT_MILLIS = 5 * 1000;
 interface Props {
   children: React.ReactNode;
   onReportPrepared?: ReportObserver;
+  onStartTransaction?: StartTransaction;
+  onFinishTransaction?: FinishTransaction;
   renderTimeoutMillis?: number;
   errorHandler?: ErrorHandler;
   enabled?: boolean;
@@ -28,6 +31,8 @@ interface Props {
 const PerformanceProfiler = ({
   children,
   onReportPrepared = () => {},
+  onStartTransaction = () => {},
+  onFinishTransaction = () => {},
   renderTimeoutMillis = DEFAULT_RENDER_TIMEOUT_MILLIS,
   errorHandler = () => {},
   enabled = true,

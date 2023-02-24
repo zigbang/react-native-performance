@@ -7,6 +7,7 @@ import {reverseReduce, reverseTraverse} from '../states/state-utils';
 import logger, {LogLevel} from '../../utils/Logger';
 
 import StateController, {RenderTimeoutConfig, OnStateChangedListener} from './StateController';
+import {FinishTransaction, StartTransaction} from './TransactionController';
 
 export const DESTINATION_SCREEN_NAME_PLACEHOLDER = '__unknown_destination_screen__';
 
@@ -102,9 +103,16 @@ export default class EnabledStateController implements StateController {
     enabled: false,
   };
 
+  constructor(start: StartTransaction, finish: FinishTransaction) {
+    this.startTransaction = start;
+    this.finishTransaction = finish;
+  }
+
   private readonly stateRegistry: Map<string, State> = new Map();
   private readonly watchdogTimers: Map<any, string> = new Map();
   private readonly onStateChangedListeners: OnStateChangedListener[] = [];
+  private readonly startTransaction: StartTransaction;
+  private readonly finishTransaction: FinishTransaction;
 
   onAppStarted() {
     this.onFlowStart({
@@ -177,6 +185,7 @@ export default class EnabledStateController implements StateController {
       renderTimeoutMillisOverride,
       type: 'flow_start',
     });
+    this.startTransaction();
   }
 
   onScreenMounted({destinationScreen, componentInstanceId}: {destinationScreen: string; componentInstanceId: string}) {
@@ -300,6 +309,7 @@ export default class EnabledStateController implements StateController {
     const oldState = this.safeGetCurrentState(props.destinationScreen, props.componentInstanceId);
     if (props.interactive) {
       this.stopWatchdogTimerForComponent(props.componentInstanceId);
+      this.finishTransaction();
     }
 
     const nextState = new Rendered({

@@ -72,6 +72,12 @@ const App = () => {
       <ApolloProvider client={apolloClient}>
         <PerformanceProfiler
           logLevel={LogLevel.Debug}
+          onStartTransaction={() => {
+            console.log(`### onStartTransaction`);
+          }}
+          onFinishTransaction={() => {
+            console.log(`### onFinishTransaction`);
+          }}
           errorHandler={(error: PerformanceProfilerError) => {
             console.log(`### ${JSON.stringify(error)}`);
           }}
