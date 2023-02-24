@@ -176,6 +176,7 @@ export default class EnabledStateController implements StateController {
       logger.debug('Skipping starting new flow after navigation started since app_boot flow is already in progress');
       return;
     }
+    this.startTransaction();
     this.onFlowStart({
       timestamp: new BridgedEventTimestampBuilder()
         .nativeTimestamp(uiEvent?.nativeEvent.timestamp)
@@ -185,7 +186,6 @@ export default class EnabledStateController implements StateController {
       renderTimeoutMillisOverride,
       type: 'flow_start',
     });
-    this.startTransaction();
   }
 
   onScreenMounted({destinationScreen, componentInstanceId}: {destinationScreen: string; componentInstanceId: string}) {
@@ -309,7 +309,6 @@ export default class EnabledStateController implements StateController {
     const oldState = this.safeGetCurrentState(props.destinationScreen, props.componentInstanceId);
     if (props.interactive) {
       this.stopWatchdogTimerForComponent(props.componentInstanceId);
-      this.finishTransaction();
     }
 
     const nextState = new Rendered({
@@ -320,6 +319,9 @@ export default class EnabledStateController implements StateController {
     });
 
     this.changeStateTo(props.destinationScreen, props.componentInstanceId, nextState);
+    if (props.interactive) {
+      this.finishTransaction();
+    }
   }
 
   private onFlowStart({
