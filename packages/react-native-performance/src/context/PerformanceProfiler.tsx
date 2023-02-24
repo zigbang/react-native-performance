@@ -71,6 +71,8 @@ const PerformanceProfiler = ({
 
   const stateController = useStateControllerInitializer({
     enabled,
+    onStartTransaction,
+    onFinishTransaction,
     errorHandler: performanceProfilerErrorHandler,
     reportEmitter,
     useRenderTimeouts,
