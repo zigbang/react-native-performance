@@ -7,7 +7,7 @@ import {reverseReduce, reverseTraverse} from '../states/state-utils';
 import logger, {LogLevel} from '../../utils/Logger';
 
 import StateController, {RenderTimeoutConfig, OnStateChangedListener} from './StateController';
-import {FinishTransaction, StartTransaction} from './TransactionController';
+import {FinishTransaction, StartTransaction, StateSpan} from './TransactionController';
 
 export const DESTINATION_SCREEN_NAME_PLACEHOLDER = '__unknown_destination_screen__';
 
@@ -103,9 +103,10 @@ export default class EnabledStateController implements StateController {
     enabled: false,
   };
 
-  constructor(start: StartTransaction, finish: FinishTransaction) {
+  constructor(start: StartTransaction, finish: FinishTransaction, span: StateSpan) {
     this.startTransaction = start;
     this.finishTransaction = finish;
+    this.span = span;
   }
 
   private readonly stateRegistry: Map<string, State> = new Map();
@@ -113,6 +114,7 @@ export default class EnabledStateController implements StateController {
   private readonly onStateChangedListeners: OnStateChangedListener[] = [];
   private readonly startTransaction: StartTransaction;
   private readonly finishTransaction: FinishTransaction;
+  private readonly span: StateSpan;
 
   onAppStarted() {
     this.onFlowStart({
@@ -439,6 +441,7 @@ export default class EnabledStateController implements StateController {
     this.stateRegistry.set(componentInstanceId, newState);
     this.onStateChangedListeners.forEach(listener => listener(destinationScreen, oldState, newState));
     logger.debug(`State: ${newState.toString()}`);
+    this.span(newState);
     assertRenderPassNamesUnique(newState);
   }
 

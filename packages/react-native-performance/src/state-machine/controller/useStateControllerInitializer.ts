@@ -6,12 +6,13 @@ import StateController, {OnStateChangedListener} from './StateController';
 import EnabledStateController from './EnabledStateController';
 import DisabledStateController from './DisabledStateController';
 import ErrorHandlerStateController from './ErrorHandlerStateController';
-import {FinishTransaction, StartTransaction} from './TransactionController';
+import {FinishTransaction, StartTransaction, StateSpan} from './TransactionController';
 
 export default function useStateControllerInitializer({
   enabled,
   onStartTransaction,
   onFinishTransaction,
+  onStateSpan,
   errorHandler,
   reportEmitter,
   useRenderTimeouts,
@@ -20,6 +21,7 @@ export default function useStateControllerInitializer({
   enabled: boolean;
   onStartTransaction: StartTransaction;
   onFinishTransaction: FinishTransaction;
+  onStateSpan: StateSpan;
   errorHandler: ErrorHandler;
   reportEmitter: OnStateChangedListener;
   useRenderTimeouts: boolean;
@@ -30,7 +32,7 @@ export default function useStateControllerInitializer({
   const newStateController = (() => {
     if (prevStateController.current === undefined || enabled !== prevStateController.current.isEnabled) {
       const innerController = enabled
-        ? new EnabledStateController(onStartTransaction, onFinishTransaction)
+        ? new EnabledStateController(onStartTransaction, onFinishTransaction, onStateSpan)
         : new DisabledStateController();
       return new ErrorHandlerStateController(innerController, errorHandler);
     }

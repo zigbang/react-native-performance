@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {PerformanceProfiler, LogLevel, PerformanceProfilerError} from '@shopify/react-native-performance';
 import {ListsProfiler} from '@shopify/react-native-performance-lists-profiler';
 import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client';
+import {State} from '@shopify/react-native-performance/src/state-machine';
 
 import {ExamplesScreen} from './examples';
 import PerformanceScreen from './examples/PerformanceScreen';
@@ -77,6 +78,9 @@ const App = () => {
           }}
           onFinishTransaction={() => {
             console.log(`### onFinishTransaction`);
+          }}
+          onStateSpan={(newState: State) => {
+            console.log(`### onStateSpan ${newState}`);
           }}
           errorHandler={(error: PerformanceProfilerError) => {
             console.log(`### ${JSON.stringify(error)}`);
