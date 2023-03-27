@@ -178,7 +178,6 @@ export default class EnabledStateController implements StateController {
       logger.debug('Skipping starting new flow after navigation started since app_boot flow is already in progress');
       return;
     }
-    this.stateRegistry.clear();
     this.startTransaction();
     this.onFlowStart({
       timestamp: new BridgedEventTimestampBuilder()
