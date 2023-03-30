@@ -98,7 +98,7 @@ export class MultipleFlowsError extends PerformanceProfilerError {
 
 export default class EnabledStateController implements StateController {
   readonly isEnabled = true;
-
+  private type = '';
   private renderTimeoutConfig: RenderTimeoutConfig = {
     enabled: false,
   };
@@ -117,6 +117,8 @@ export default class EnabledStateController implements StateController {
   private readonly span: StateSpan;
 
   onAppStarted() {
+    this.type = 'app_boot';
+    this.startTransaction(this.type);
     this.onFlowStart({
       timestamp: new BridgedEventTimestampBuilder()
         .nativeTimestamp(getNativeStartupTimestamp())
@@ -178,7 +180,8 @@ export default class EnabledStateController implements StateController {
       logger.debug('Skipping starting new flow after navigation started since app_boot flow is already in progress');
       return;
     }
-    this.startTransaction();
+    this.type = 'flow_start';
+    this.startTransaction(this.type);
     this.onFlowStart({
       timestamp: new BridgedEventTimestampBuilder()
         .nativeTimestamp(uiEvent?.nativeEvent.timestamp)
@@ -278,7 +281,8 @@ export default class EnabledStateController implements StateController {
   }) {
     const previousState = this.safeGetCurrentState(destinationScreen, componentInstanceId);
     this.stopWatchdogTimerForComponent(componentInstanceId);
-
+    this.type = 'flow_start';
+    this.startTransaction(this.type);
     this.changeStateTo(
       destinationScreen,
       componentInstanceId,
@@ -322,7 +326,7 @@ export default class EnabledStateController implements StateController {
 
     this.changeStateTo(props.destinationScreen, props.componentInstanceId, nextState);
     if (props.interactive) {
-      this.finishTransaction();
+      this.finishTransaction(this.type);
     }
   }
 

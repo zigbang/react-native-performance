@@ -1,7 +1,7 @@
 import State from '../states/State';
 
-export type StartTransaction = () => void;
-export type FinishTransaction = () => void;
+export type StartTransaction = (type?: string) => void;
+export type FinishTransaction = (type?: string) => void;
 export type StateSpan = (state: State) => void;
 
 interface TransactionController {
