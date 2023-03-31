@@ -326,7 +326,7 @@ export default class EnabledStateController implements StateController {
 
     this.changeStateTo(props.destinationScreen, props.componentInstanceId, nextState);
     if (props.interactive) {
-      this.finishTransaction(this.type);
+      this.finishTransaction(this.type, nextState);
     }
   }
 
